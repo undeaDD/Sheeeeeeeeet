@@ -61,7 +61,8 @@ open class ActionSheetPopoverPresenter: NSObject, ActionSheetPresenter {
         sheet.modalPresentationStyle = .popover
         popover = self.popover(for: sheet, in: vc)
         popover?.sourceView = view
-        popover?.sourceRect = view?.bounds ?? CGRect()
+        popover?.sourceRect = CGRect(x: view?.center.x ?? 0, y: view?.bounds.maxY ?? 0, width: 0, height: 0)
+        popover?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
         popover?.barButtonItem = item
         refreshPopoverBackgroundColor()
         vc.present(sheet, animated: true, completion: completion)
