@@ -23,11 +23,10 @@ import UIKit
 open class ActionSheetSingleSelectItem: ActionSheetSelectItem {
     
     
-     // MARK: - Functions
+    // MARK: - Functions
     
-    open override func applyAppearance(_ appearance: ActionSheetAppearance) {
-        super.applyAppearance(appearance)
-        self.appearance = ActionSheetSingleSelectItemAppearance(copy: appearance.singleSelectItem)
+    open override func cell(for tableView: UITableView) -> ActionSheetItemCell {
+        return ActionSheetSingleSelectItemCell(style: cellStyle, reuseIdentifier: cellReuseIdentifier)
     }
     
     open override func handleTap(in actionSheet: ActionSheet) {
@@ -38,3 +37,8 @@ open class ActionSheetSingleSelectItem: ActionSheetSelectItem {
         isSelected = true
     }
 }
+
+
+// MARK: -
+
+open class ActionSheetSingleSelectItemCell: ActionSheetSelectItemCell {}

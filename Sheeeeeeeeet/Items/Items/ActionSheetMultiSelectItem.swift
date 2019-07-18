@@ -32,12 +32,14 @@ open class ActionSheetMultiSelectItem: ActionSheetSelectItem {
     
     public init(
         title: String,
+        subtitle: String? = nil,
         isSelected: Bool,
         group: String = "",
         value: Any? = nil,
         image: UIImage? = nil) {
         super.init(
             title: title,
+            subtitle: subtitle,
             isSelected: isSelected,
             group: group,
             value: value,
@@ -48,9 +50,8 @@ open class ActionSheetMultiSelectItem: ActionSheetSelectItem {
     
     // MARK: - Functions
     
-    open override func applyAppearance(_ appearance: ActionSheetAppearance) {
-        super.applyAppearance(appearance)
-        self.appearance = ActionSheetMultiSelectItemAppearance(copy: appearance.multiSelectItem)
+    open override func cell(for tableView: UITableView) -> ActionSheetItemCell {
+        return ActionSheetMultiSelectItemCell(style: cellStyle, reuseIdentifier: cellReuseIdentifier)
     }
     
     open override func handleTap(in actionSheet: ActionSheet) {
@@ -60,3 +61,6 @@ open class ActionSheetMultiSelectItem: ActionSheetSelectItem {
         items.forEach { $0.updateState(for: actionSheet) }
     }
 }
+
+
+open class ActionSheetMultiSelectItemCell: ActionSheetSelectItemCell {}

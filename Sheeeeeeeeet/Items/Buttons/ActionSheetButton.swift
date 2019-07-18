@@ -10,7 +10,7 @@
  
  This class is a base class for all action sheet buttons. It
  is not intended to be used directly. Instead, use the built
- in buttons or subclass it to create your own button type.
+ in buttons or subclass it to create your own buttons.
  
  */
 
@@ -39,18 +39,24 @@ open class ActionSheetButton: ActionSheetItem {
     
     // MARK: - Functions
     
-    open override func applyAppearance(_ appearance: ActionSheetAppearance) {
-        self.appearance = customAppearance ?? ActionSheetButtonAppearance(copy: appearance.okButton)
-    }
-    
-    open override func applyAppearance(to cell: UITableViewCell) {
-        super.applyAppearance(to: cell)
-        cell.textLabel?.textAlignment = .center
+    open override func cell(for tableView: UITableView) -> ActionSheetItemCell {
+        return ActionSheetButtonCell(style: .default, reuseIdentifier: cellReuseIdentifier)
     }
 }
 
 
-// MARK: - ActionSheetItem Extensions
+// MARK: -
+
+open class ActionSheetButtonCell: ActionSheetItemCell {
+    
+    open override func refresh() {
+        super.refresh()
+        textLabel?.textAlignment = .center
+    }
+}
+
+
+// MARK: - Button Extensions
 
 public extension ActionSheetItem {
     

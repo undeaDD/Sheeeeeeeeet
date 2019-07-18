@@ -17,11 +17,13 @@
  action sheet items. If you look at `cell(for: ...)`, you'll
  see that it uses `ActionSheetCollectionItemCell` for its id.
  
+ TODO: Unit test
+ 
  */
 
 import Foundation
 
-open class ActionSheetCollectionItem<T>: ActionSheetItem, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout where T: ActionSheetCollectionItemContentCell {
+open class ActionSheetCollectionItem<T: ActionSheetCollectionItemContentCell>: ActionSheetItem, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     
     // MARK: - Initialization
@@ -46,6 +48,7 @@ open class ActionSheetCollectionItem<T>: ActionSheetItem, UICollectionViewDataSo
     
     // MARK: - Properties
     
+    public override var height: CGFloat { return T.defaultSize.height }
     public let itemCellType: T.Type
     public let itemCount: Int
     public private(set) var selectionAction: CellAction
@@ -54,21 +57,12 @@ open class ActionSheetCollectionItem<T>: ActionSheetItem, UICollectionViewDataSo
     
     // MARK: - Functions
     
-    open override func applyAppearance(_ appearance: ActionSheetAppearance) {
-        super.applyAppearance(appearance)
-        self.appearance = ActionSheetCollectionItemAppearance(copy: appearance.collectionItem)
-        self.appearance.height = T.defaultSize.height + T.topInset + T.bottomInset + 0.5
-    }
-    
-    open override func applyAppearance(to cell: UITableViewCell) {
-        super.applyAppearance(to: cell)
-        guard let itemCell = cell as? ActionSheetCollectionItemCell else { return }
-        itemCell.setup(withNib: T.nib, owner: self)
-    }
-    
-    open override func cell(for tableView: UITableView) -> UITableViewCell {
+    open override func cell(for tableView: UITableView) -> ActionSheetItemCell {
         tableView.register(ActionSheetCollectionItemCell.nib, forCellReuseIdentifier: cellReuseIdentifier)
-        return super.cell(for: tableView)
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier)
+        guard let typedCell = cell as? ActionSheetCollectionItemCell else { fatalError("Invalid cell type created by superclass") }
+        typedCell.setup(withNib: T.nib, owner: self)
+        return typedCell
     }
     
     open func extendSelectionAction(toReload actionSheet: ActionSheet) {
@@ -125,5 +119,41 @@ open class ActionSheetCollectionItem<T>: ActionSheetItem, UICollectionViewDataSo
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0
+    }
+}
+
+
+// MARK: -
+
+open class ActionSheetCollectionItemCell: ActionSheetItemCell {
+    
+    
+    // MARK: - Properties
+    
+    static let itemCellIdentifier = ActionSheetCollectionItemCell.className
+    
+    static let nib = ActionSheetCollectionItemCell.defaultNib
+    
+    
+    // MARK: - Outlets
+    
+    @IBOutlet weak var collectionView: UICollectionView! {
+        didSet {
+            let flow = UICollectionViewFlowLayout()
+            flow.scrollDirection = .horizontal
+            collectionView.collectionViewLayout = flow
+        }
+    }
+    
+    
+    // MARK: - Functions
+    
+    func setup(withNib nib: UINib, owner: UICollectionViewDataSource & UICollectionViewDelegate) {
+        let id = ActionSheetCollectionItemCell.itemCellIdentifier
+        collectionView.contentInset = .zero
+        collectionView.register(nib, forCellWithReuseIdentifier: id)
+        collectionView.dataSource = owner
+        collectionView.delegate = owner
+        collectionView.reloadData()
     }
 }

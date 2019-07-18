@@ -27,18 +27,17 @@ open class ActionSheetSectionTitle: ActionSheetItem {
     
     public init(title: String, subtitle: String? = nil) {
         super.init(title: title, subtitle: subtitle, tapBehavior: .none)
-        cellStyle = .value1
     }
     
     
     // MARK: - Functions
     
-    open override func applyAppearance(_ appearance: ActionSheetAppearance) {
-        self.appearance = ActionSheetSectionTitleAppearance(copy: appearance.sectionTitle)
-    }
-    
-    open override func applyAppearance(to cell: UITableViewCell) {
-        super.applyAppearance(to: cell)
-        cell.selectionStyle = .none
+    open override func cell(for tableView: UITableView) -> ActionSheetItemCell {
+        return ActionSheetSectionTitleCell(style: cellStyle, reuseIdentifier: cellReuseIdentifier)
     }
 }
+
+
+// MARK: -
+
+open class ActionSheetSectionTitleCell: ActionSheetItemCell {}

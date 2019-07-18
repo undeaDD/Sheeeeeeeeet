@@ -9,9 +9,9 @@
 /*
  
  OK buttons have no special behavior, but can be used when a
- user should apply action sheet changes by tapping an button.
+ user should apply action sheet changes by tapping a button.
  
- The value of an OK button is `ButtonType.ok`.
+ The value of an OK button is `.ok`.
  
  */
 
@@ -29,7 +29,12 @@ open class ActionSheetOkButton: ActionSheetButton {
     
     // MARK: - Functions
     
-    open override func applyAppearance(_ appearance: ActionSheetAppearance) {
-        self.appearance = customAppearance ?? ActionSheetOkButtonAppearance(copy: appearance.okButton)
+    open override func cell(for tableView: UITableView) -> ActionSheetItemCell {
+        return ActionSheetOkButtonCell(style: .default, reuseIdentifier: cellReuseIdentifier)
     }
 }
+
+
+// MARK: - 
+
+open class ActionSheetOkButtonCell: ActionSheetButtonCell {}

@@ -7,9 +7,22 @@ class MockActionSheet: ActionSheet {
     var handleTapInvokeItems = [ActionSheetItem]()
     var prepareForPresentationInvokeCount = 0
     var refreshInvokeCount = 0
-    var refreshButtonsVisibilityInvokeCount = 0
+    var refreshButtonsInvokeCount = 0
+    var refreshItemsInvokeCount = 0
+    var refreshHeaderInvokeCount = 0
     var refreshHeaderVisibilityInvokeCount = 0
     var reloadDataInvokeCount = 0
+    var setupInvokeCount = 0
+    var setupItemsInvokeCount = 0
+    var setupItemsInvokeItems = [[ActionSheetItem]]()
+    
+    
+    private var _presentingViewController: UIViewController?
+    override var presentingViewController: UIViewController? {
+        get { return _presentingViewController }
+        set { _presentingViewController = newValue }
+    }
+    
     
     override func dismiss(completion: @escaping () -> ()) {
         super.dismiss { completion() }
@@ -27,9 +40,19 @@ class MockActionSheet: ActionSheet {
         refreshInvokeCount += 1
     }
     
-    override func refreshButtonsVisibility() {
-        super.refreshButtonsVisibility()
-        refreshButtonsVisibilityInvokeCount += 1
+    override func refreshButtons() {
+        super.refreshButtons()
+        refreshButtonsInvokeCount += 1
+    }
+    
+    override func refreshItems() {
+        super.refreshItems()
+        refreshItemsInvokeCount += 1
+    }
+    
+    override func refreshHeader() {
+        super.refreshHeader()
+        refreshHeaderInvokeCount += 1
     }
     
     override func refreshHeaderVisibility() {
@@ -40,5 +63,16 @@ class MockActionSheet: ActionSheet {
     override func reloadData() {
         super.reloadData()
         reloadDataInvokeCount += 1
+    }
+    
+    override func setup() {
+        super.setup()
+        setupInvokeCount += 1
+    }
+    
+    override func setup(items: [ActionSheetItem]) {
+        super.setup(items: items)
+        setupItemsInvokeCount += 1
+        setupItemsInvokeItems.append(items)
     }
 }

@@ -28,12 +28,12 @@ open class ActionSheetSectionMargin: ActionSheetItem {
     
     // MARK: - Functions
     
-    open override func applyAppearance(_ appearance: ActionSheetAppearance) {
-        self.appearance = ActionSheetSectionMarginAppearance(copy: appearance.sectionMargin)
-    }
-    
-    open override func applyAppearance(to cell: UITableViewCell) {
-        super.applyAppearance(to: cell)
-        cell.selectionStyle = .none
+    open override func cell(for tableView: UITableView) -> ActionSheetItemCell {
+        return ActionSheetSectionMarginCell(style: cellStyle, reuseIdentifier: cellReuseIdentifier)
     }
 }
+
+
+// MARK: -
+
+open class ActionSheetSectionMarginCell: ActionSheetItemCell {}

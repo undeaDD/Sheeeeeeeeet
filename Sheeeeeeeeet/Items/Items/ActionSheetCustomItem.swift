@@ -8,16 +8,15 @@
 
 /*
  
- Custom items can be used to present any view in your sheets.
- Just specify the view type you want to use and make sure it
- inherits `ActionSheetItemCell`, and that it also implements
- `ActionSheetCustomItemCell`.
+ Custom items can be used to present any views in your sheet.
+ It can use any view that inherits `ActionSheetItemCell` and
+ implements `ActionSheetCustomItemCell`.
  
  */
 
 import UIKit
 
-public class ActionSheetCustomItem<T>: ActionSheetItem where T: ActionSheetCustomItemCell {
+public class ActionSheetCustomItem<T: ActionSheetCustomItemCell>: ActionSheetItem {
     
     
     // MARK: - Initialization
@@ -41,24 +40,29 @@ public class ActionSheetCustomItem<T>: ActionSheetItem where T: ActionSheetCusto
     
     // MARK: - Properties
     
+    public override var height: CGFloat { return T.defaultSize.height }
+    
     public let cellType: T.Type
+    
     public let setupAction: SetupAction
     
     
     // MARK: - Functions
     
-    public override func applyAppearance(_ appearance: ActionSheetAppearance) {
-        super.applyAppearance(appearance)
-        self.appearance = ActionSheetCustomItemAppearance(copy: appearance.customItem)
-        self.appearance.height = T.defaultSize.height
-    }
-    
-    open override func cell(for tableView: UITableView) -> UITableViewCell {
+    open override func cell(for tableView: UITableView) -> ActionSheetItemCell {
         tableView.register(T.nib, forCellReuseIdentifier: cellReuseIdentifier)
-        let cell = super.cell(for: tableView)
-        cell.selectionStyle = .none
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier)
         guard let typedCell = cell as? T else { fatalError("Invalid cell type created by superclass") }
         setupAction(typedCell)
         return typedCell
     }
+}
+
+
+// MARK: -
+
+public protocol ActionSheetCustomItemCell where Self: ActionSheetItemCell {
+    
+    static var nib: UINib { get }
+    static var defaultSize: CGSize { get }
 }
